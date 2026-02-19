@@ -56,29 +56,19 @@ export async function POST() {
       })
 
     if (homepage) log('homepage found', homepage.url)
-    else log('homepage not found', 'will pick by page type diversity')
+    else log('homepage not found', 'no homepage detected in crawled pages')
 
-    // 2. Categorize remaining pages and prefer a mix
-    const remaining = pages.filter((p) => p !== homepage)
-    const isBlogPost = (p: CrawledPage) => /\/(blog|post|article|news)\//i.test(p.url)
-    const isCorePage = (p: CrawledPage) => !isBlogPost(p)
+    const contextPages = homepage ? [homepage] : []
 
-    // Prefer core pages (about, services, pricing) over blog posts for brand voice
-    const corePages = remaining.filter(isCorePage).sort((a, b) => b.wordCount - a.wordCount)
-    const blogPosts = remaining.filter(isBlogPost).sort((a, b) => b.wordCount - a.wordCount)
+    if (contextPages.length === 0) {
+      log('error', 'no homepage found — cannot generate style')
+      return NextResponse.json(
+        { error: 'Homepage not found in crawled pages. Make sure your homepage is crawled.' },
+        { status: 400 }
+      )
+    }
 
-    // Take up to 2 core pages + up to 2 blog posts (for writing style), fill remaining slots
-    const maxOther = homepage ? 4 : 5
-    const selectedCore = corePages.slice(0, 2)
-    const selectedBlog = blogPosts.slice(0, Math.max(2, maxOther - selectedCore.length))
-    const otherPages = [...selectedCore, ...selectedBlog].slice(0, maxOther)
-
-    const contextPages = homepage ? [homepage, ...otherPages] : otherPages
-
-    log('pages selected', contextPages.map(p => {
-      const type = isBlogPost(p) ? 'blog' : p === homepage ? 'home' : 'core'
-      return `[${type}] ${p.url}`
-    }).join(', '))
+    log('pages selected', contextPages.map(p => p.url).join(', '))
 
     // Build brand context — truncate each page to 3000 chars to keep prompt reasonable
     const MAX_CONTENT_CHARS = 3000
