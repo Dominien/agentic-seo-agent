@@ -1,32 +1,53 @@
 <p align="center">
   <h1 align="center">Agentic SEO</h1>
   <p align="center">
-    Your AI SEO strategist that actually looks at your data.
+    The open-source AI agent that does your SEO — not just talks about it.
     <br />
-    Connects to Google Search Console. Crawls your site. Tells you what to write next — and writes it for you.
+    Connects to Google Search Console. Crawls your site. Investigates your data. Writes content in your voice.
   </p>
 </p>
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> &bull;
+  <a href="#why-agentic">Why Agentic?</a> &bull;
   <a href="#features">Features</a> &bull;
   <a href="#supported-models">Models</a> &bull;
   <a href="#how-it-works">How It Works</a> &bull;
-  <a href="#origin-story">Origin Story</a> &bull;
   <a href="#license">License</a>
 </p>
 
 ---
 
 <p align="center">
-  <img src="docs/images/screenshot.png" alt="Agentic SEO Agent — Chat interface with Quick Actions, model selector, and site profile" width="800" />
+  <img src="docs/images/screenshot.png" alt="Agentic SEO — Chat interface with Quick Actions, model selector, and site profile" width="800" />
 </p>
 
-Most SEO tools charge $100+/mo to show you dashboards you'll never act on.
+## Why Agentic?
 
-Agentic SEO is an AI agent that connects to your real Google Search Console data, crawls your actual site content, and tells you exactly what to do next. Not a dashboard. Not a brief generator. An agent that investigates your data, cross-references it with your content, and gives you specific recommendations backed by numbers.
+Most "AI SEO tools" are glorified prompt wrappers. You paste a keyword, they hit an API once, and you get generic advice that could apply to any site on the internet. They don't know your content. They don't see your data. They don't investigate.
 
-Self-hosted. Open source. Bring your own API key.
+**Agentic SEO is fundamentally different.** It's not a chatbot with an SEO prompt — it's an autonomous agent with tools.
+
+Here's what that means in practice:
+
+When you ask "Why is my traffic dropping?", a normal AI tool gives you a generic checklist. Agentic SEO does this:
+
+```
+Agent:
+  → Calls gsc_query(type: "declining") — finds 15 keywords losing position
+  → Calls gsc_query(type: "trends", keyword: "react server components") — pulls 90-day trend
+  → Calls site_context(topic: "react server components") — checks your actual page content
+  → Calls link_suggester(keyword: "react server components") — finds internal linking gaps
+  → Returns: specific diagnosis + 4 action items backed by your real numbers
+```
+
+Five tool calls. Three data sources cross-referenced. One answer that's specific to YOUR site — because the agent actually looked at your data before speaking.
+
+This is what **agentic** means: the AI doesn't just respond, it acts. It has a loop — plan, execute, verify — and it keeps going until it has a real answer. Up to 5 rounds of tool calls per message. No hand-holding required.
+
+**The pattern behind it — the Agentic Orchestration Layer (AOL) — is what makes this work.** The LLM receives your full site context (crawled pages, GSC performance data, sitemap, memory from past sessions) injected into every request. Then it decides which tools to call, in what order, and iterates until the answer is solid.
+
+Other tools show you dashboards. This one does the work.
 
 ## Origin Story
 
@@ -34,9 +55,7 @@ This started as a manual workflow. I connected Claude Code to my Supabase CMS an
 
 **The result: 68,000 impressions and 1,300 clicks in 9 days.** My blog went from ~5 impressions/week to 200 clicks/day.
 
-The core architecture behind it — what I call the **Agentic Orchestration Layer (AOL)** — uses a pattern I haven't seen in other SEO tools: the LLM doesn't just chat, it calls tools in a loop, cross-references your GSC data with your actual site content, and iterates until it has a real answer. No dashboard summaries. No vibes-based recommendations.
-
-This project packages that entire workflow into something you can `git clone` and run in 5 minutes. No Claude Code subscription needed, no manual wiring — just connect your GSC, pick a model, and start asking questions.
+This project packages that entire workflow into something anyone can run. Self-hosted, open source, bring your own API key.
 
 ## Features
 
@@ -46,25 +65,25 @@ This project packages that entire workflow into something you can `git clone` an
 
 **Writing Style Generation** — One click generates a complete writing style guide from your site's brand voice. The system reads your homepage and top pages, then produces 6 style files: Tone, Structure, Sentence Style, Examples, Anti-Words, and Context. No existing blog posts needed — it generates the style from your brand identity. Every file is viewable and editable directly in the UI.
 
-**Article Writer** — Full blog post generation that actually sounds like your brand. The agent uses your style guide, weaves in related keywords from GSC data, and includes internal links to relevant pages on your site. Tell it a topic and target keyword, and get a publish-ready draft.
+**Article Writer** — Full blog post generation that actually sounds like your brand. The agent loads your style guide, weaves in related keywords from GSC data, and includes internal links to relevant pages on your site. Tell it a topic and target keyword, get a publish-ready draft. No AI slop — the Anti-Words system bans 50+ overused AI phrases.
 
 **Multi-Project Support** — Run SEO for multiple sites from one install. Each project gets its own isolated data — crawled pages, GSC data, writing style, chat history, and memory. Switch between projects without losing anything.
 
-**Agentic Tool Use** — Not a wrapper around a chat API. The agent calls tools in a loop (up to 5 rounds per message), cross-references GSC data with your site content, and iterates until it has a real answer. This is the core AOL pattern: plan, execute, verify.
-
-**20+ Models via 3 Providers** — Use whatever model fits your budget:
+**20+ Models via 3 Providers** — Use whatever model fits your budget. You need at least one API key:
 
 | Provider | Models | Best For |
 |----------|--------|----------|
-| **Anthropic** | Claude Opus 4.6, Sonnet 4.6, Haiku 4.5 | Best agent behavior, most thorough analysis |
-| **OpenAI** | GPT-5.2, GPT-4.1, o3-mini | Great all-rounder |
-| **OpenRouter** | DeepSeek V3.2, Kimi K2.5, Qwen 3.5+, Gemini 2.5, Llama 4 | Cheapest frontier models ($0.10–$0.30/M tokens) |
+| **[OpenRouter](https://openrouter.ai/keys)** (recommended) | MiniMax M2.5, DeepSeek V3.2, Kimi K2.5, Qwen 3.5+, Gemini 2.5, Llama 4 | Best value — MiniMax M2.5 has strong agentic capabilities at a fraction of the cost |
+| **[Anthropic](https://console.anthropic.com/)** | Claude Opus 4.6, Sonnet 4.6, Haiku 4.5 | Best agent behavior, most thorough analysis |
+| **[OpenAI](https://platform.openai.com/api-keys)** | GPT-5.2, GPT-4.1, o3-mini | Great all-rounder |
+
+> **Cost-conscious?** Go with OpenRouter + MiniMax M2.5. Great agentic tool-use capabilities, and you'll spend pennies per session.
 
 **Content Briefs** — Structured briefs with target keywords, suggested outline, word count targets, and internal linking opportunities from your sitemap.
 
 **Internal Link Suggestions** — The agent knows every URL in your sitemap and every page it's crawled. It suggests contextual links based on actual content overlap, not keyword matching.
 
-**Quick Actions** — One-click analysis from the chat: Content Gaps, Weekly Report, Generate Brief, Declining Keywords, Quick Wins, Write Article, and Strategy.
+**Quick Actions** — One-click from the chat: Content Gaps, Weekly Report, Generate Brief, Declining Keywords, Quick Wins, Write Article, and Strategy.
 
 **Editable Agent Personality** — `data/AGENT.md` controls how the agent thinks and writes. Change its tone, focus area, language, or output format. Fork someone else's `AGENT.md` to try a different strategy. No code changes needed.
 
@@ -78,13 +97,13 @@ This project packages that entire workflow into something you can `git clone` an
 
 - Node.js 18+
 - A Google Cloud project with [Search Console API](https://console.cloud.google.com/apis/library/searchconsole.googleapis.com) enabled
-- At least one API key: [Anthropic](https://console.anthropic.com/), [OpenAI](https://platform.openai.com/api-keys), or [OpenRouter](https://openrouter.ai/keys)
+- At least one LLM API key — [OpenRouter](https://openrouter.ai/keys) (recommended), [Anthropic](https://console.anthropic.com/), or [OpenAI](https://platform.openai.com/api-keys)
 
 ### Setup
 
 ```bash
-git clone https://github.com/Dominien/agentic-seo.git
-cd agentic-seo
+git clone https://github.com/Dominien/agentic-seo-agent.git
+cd agentic-seo-agent
 npm install
 
 cp .env.example .env.local
@@ -112,65 +131,36 @@ GOOGLE_CLIENT_ID=your-client-id
 GOOGLE_CLIENT_SECRET=your-client-secret
 GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
 
-# LLM API Keys (at least one required)
+# LLM API Keys (at least one required — OpenRouter recommended for best value)
+OPENROUTER_API_KEY=sk-or-...
 ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
-OPENROUTER_API_KEY=sk-or-...
 ```
 
 ## How It Works
 
-```
-You: "Find keywords where my position has been declining"
+### The Agentic Loop
 
-Agent:
-  → Calls gsc_query(type: "declining") — finds 15 keywords losing position
-  → Calls gsc_query(type: "trends", keyword: "top declining keyword")
-  → Calls site_context(topic: "declining keyword") — checks existing content
-  → Calls link_suggester(keyword: "declining keyword") — finds linking opps
-  → Returns: analysis table + root cause + 4 specific action items
+This is what separates Agentic SEO from every other "AI SEO tool":
+
+```mermaid
+flowchart TD
+    A[Your Message] --> B[Agent Core / AOL Engine]
+    B -- "AGENT.md + Site Context + Memory" --> C{Tool Selection}
+    C --> D[GSC Query]
+    C --> E[Site Context]
+    C --> F[Link Suggester]
+    C --> G[Article Writer]
+    D --> H[Cross-reference & Verify]
+    E --> H
+    F --> H
+    G --> H
+    H --> I{Need more data?}
+    I -- "Yes (up to 5 rounds)" --> C
+    I -- "No" --> J[Final Answer — backed by your real data]
 ```
 
-The agent doesn't query data once and summarize — it investigates. Each message can trigger multiple rounds of tool calls, cross-referencing GSC performance data with your actual site content.
-
-### Architecture
-
-```
-                    ┌──────────────────┐
-                    │    Chat UI +     │
-                    │  Quick Actions   │
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │   Agent Core     │
-                    │   (AOL Engine)   │
-                    └────────┬─────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              │              │              │
-     ┌────────▼───┐  ┌──────▼─────┐  ┌─────▼──────┐
-     │  AGENT.md  │  │   Memory   │  │    Site     │
-     │ Personality│  │  /memory/  │  │  Context    │
-     └────────────┘  └────────────┘  └────────────┘
-              │              │              │
-              └──────────────┼──────────────┘
-                             │
-                    Schema Injection
-                             │
-              ┌──────────────┼──────────────┐
-              │              │              │
-     ┌────────▼───┐  ┌──────▼─────┐  ┌─────▼──────┐
-     │ GSC Query  │  │   Site     │  │  Article   │
-     │   Tool     │  │  Context   │  │  Writer    │
-     └────────────┘  └────────────┘  └────────────┘
-              │              │              │
-              └──────────────┼──────────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │  LLM Provider    │
-                    │  (your choice)   │
-                    └──────────────────┘
-```
+The agent doesn't query data once and summarize — it investigates. Each message can trigger multiple rounds of tool calls, cross-referencing GSC performance data with your actual site content. It keeps going until the answer is solid.
 
 ### Tools
 
@@ -203,6 +193,58 @@ The 6 style files:
 | `ANTI_WORDS.md` | Banned AI slop words + brand-inappropriate language |
 
 All 6 files are viewable and editable on the Site Profile page. Tweak any of them to fine-tune how your articles sound.
+
+### Architecture
+
+```mermaid
+flowchart TD
+    subgraph UI["Frontend"]
+        Chat[Chat UI + Quick Actions]
+        Site[Site Profile + Style Editor]
+        Settings[Settings + Model Picker]
+    end
+
+    subgraph Core["Agent Core (AOL Engine)"]
+        Schema[Schema Injection]
+        Loop[Agentic Tool Loop]
+        Memory[Persistent Memory]
+    end
+
+    subgraph Context["Injected Context"]
+        Agent[AGENT.md Personality]
+        SiteCtx[Crawled Site Content]
+        GSCData[GSC Performance Data]
+        Style[Writing Style Guide]
+        Mem[Past Session Memory]
+    end
+
+    subgraph Tools["Agent Tools"]
+        T1[gsc_query]
+        T2[site_context]
+        T3[brief_generator]
+        T4[link_suggester]
+        T5[article_writer]
+        T6[code_sandbox]
+    end
+
+    subgraph Providers["LLM Providers"]
+        OR[OpenRouter]
+        AN[Anthropic]
+        OA[OpenAI]
+    end
+
+    Chat --> Schema
+    Site --> Schema
+    Schema --> Loop
+    Agent --> Schema
+    SiteCtx --> Schema
+    GSCData --> Schema
+    Style --> Schema
+    Mem --> Schema
+    Loop --> Tools
+    Loop --> Providers
+    Loop --> Memory
+```
 
 ### Design Decisions
 
@@ -262,14 +304,14 @@ data/
 
 Switch providers and models in the chat sidebar. No restart needed.
 
+### OpenRouter (recommended)
+`minimax/minimax-m2.5` · `deepseek/deepseek-v3.2` · `moonshotai/kimi-k2.5` · `qwen/qwen3.5-plus` · `deepseek/deepseek-r1-0528` · `moonshotai/kimi-k2-thinking` · `qwen/qwen3-coder` · `google/gemini-2.5-pro` · `google/gemini-2.5-flash` · `mistralai/mistral-large-2512` · `meta-llama/llama-4-maverick` · `meta-llama/llama-4-scout`
+
 ### Anthropic
 `claude-opus-4-6` · `claude-sonnet-4-6` · `claude-haiku-4-5` · `claude-sonnet-4-5` · `claude-opus-4-5` · `claude-sonnet-4` · `claude-opus-4`
 
 ### OpenAI
 `gpt-5.2` · `gpt-5.2-pro` · `gpt-4.1` · `gpt-4.1-mini` · `gpt-4.1-nano` · `o3-mini` · `gpt-4o` · `gpt-4o-mini`
-
-### OpenRouter
-`deepseek/deepseek-v3.2` · `minimax/minimax-m2.5` · `moonshotai/kimi-k2.5` · `qwen/qwen3.5-plus` · `deepseek/deepseek-r1-0528` · `moonshotai/kimi-k2-thinking` · `qwen/qwen3-coder` · `google/gemini-2.5-pro` · `google/gemini-2.5-flash` · `mistralai/mistral-large-2512` · `meta-llama/llama-4-maverick` · `meta-llama/llama-4-scout`
 
 ## Customization
 
