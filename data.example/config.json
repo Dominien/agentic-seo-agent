@@ -1,0 +1,14 @@
+{
+  "provider": {
+    "type": "openai",
+    "model": "gpt-5.2",
+    "maxTokens": 4096
+  },
+  "google": {},
+  "projects": [],
+  "activeProjectId": null,
+  "crawl": {
+    "maxPages": 100
+  },
+  "setupComplete": false
+}
