@@ -45,7 +45,7 @@ Five tool calls. Three data sources cross-referenced. One answer that's specific
 
 This is what **agentic** means: the AI doesn't just respond, it acts. It has a loop — plan, execute, verify — and it keeps going until it has a real answer. Up to 5 rounds of tool calls per message. No hand-holding required.
 
-**The pattern behind it — the Agentic Orchestration Layer (AOL) — is what makes this work.** The LLM receives your full site context (crawled pages, GSC performance data, sitemap, memory from past sessions) injected into every request. Then it decides which tools to call, in what order, and iterates until the answer is solid.
+**How it works under the hood:** Every request includes your sitemap URLs, site metadata (page count, word count), and memory from past sessions in the system prompt. The LLM uses this context to decide which tools to call — `gsc_query` for live search data, `site_context` for crawled page content, `link_suggester` for internal links. It iterates up to 5 rounds until the answer is solid.
 
 Other tools show you dashboards. This one does the work.
 
@@ -170,7 +170,7 @@ This is what separates Agentic SEO from every other "AI SEO tool":
 
 ```mermaid
 flowchart TD
-    A[Your Message] --> B[Agent Core / AOL Engine]
+    A[Your Message] --> B[Agent Core / Orchestration Loop]
     B -- "AGENT.md + Site Context + Memory" --> C{Tool Selection}
     C --> D[GSC Query]
     C --> E[Site Context]
@@ -230,7 +230,7 @@ flowchart TD
         Settings[Settings + Model Picker]
     end
 
-    subgraph Core["Agent Core (AOL Engine)"]
+    subgraph Core["Agent Core (Orchestration Loop)"]
         Schema[Schema Injection]
         Loop[Agentic Tool Loop]
         Memory[Persistent Memory]
