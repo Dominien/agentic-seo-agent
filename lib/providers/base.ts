@@ -15,7 +15,7 @@ export abstract class BaseProvider {
     this.apiKey = apiKey
     this.model = model
     this.baseUrl = baseUrl ?? ''
-    this.maxTokens = maxTokens ?? 4096
+    this.maxTokens = maxTokens ?? 15000
   }
 
   abstract chat(
