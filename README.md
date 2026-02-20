@@ -104,10 +104,24 @@ This project packages that entire workflow into something anyone can run. Self-h
 ### Prerequisites
 
 - Node.js 18+
-- A Google Cloud project with [Search Console API](https://console.cloud.google.com/apis/library/searchconsole.googleapis.com) enabled
 - At least one LLM API key — [OpenRouter](https://openrouter.ai/keys) (recommended), [Anthropic](https://console.anthropic.com/), or [OpenAI](https://platform.openai.com/api-keys)
 
-### Setup
+### 1. Set Up Google OAuth (required for Search Console)
+
+You need to create your own Google Cloud OAuth credentials. This takes ~5 minutes:
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) and create a new project (or use an existing one)
+2. **Enable the Search Console API** — go to [APIs & Services > Library](https://console.cloud.google.com/apis/library), search for "Google Search Console API", and click **Enable**
+3. **Create OAuth credentials** — go to [APIs & Services > Credentials](https://console.cloud.google.com/apis/credentials):
+   - Click **Create Credentials > OAuth client ID**
+   - If prompted, configure the **OAuth consent screen** first — choose "External", fill in the app name (e.g. "Agentic SEO"), add your email, and save. No scopes or domains needed for local use.
+   - Back in Credentials, select **Web application** as the type
+   - Add `http://localhost:3000/api/auth/google/callback` under **Authorized redirect URIs**
+   - Click **Create** and copy the **Client ID** and **Client Secret**
+
+> **Note:** While your OAuth app is in "Testing" mode, you need to add your Google account as a test user under the [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent) settings. Without this, Google will block the authorization flow.
+
+### 2. Install & Run
 
 ```bash
 git clone https://github.com/Dominien/agentic-seo-agent.git
@@ -115,28 +129,14 @@ cd agentic-seo-agent
 npm install
 
 cp .env.example .env.local
-# Add your Google OAuth credentials + at least one LLM API key
-
-npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The app walks you through onboarding:
-
-1. **Connect** — Authorize Google Search Console
-2. **Select Property** — Pick your site
-3. **Crawl & Sync** — Auto-crawl your site + pull 90 days of GSC data
-4. **Chat** — Start asking questions
-
-No database to set up. No Docker. No config files to wrestle with.
-
-### Environment Variables
-
-Your `.env.local` needs Google OAuth credentials and at least one LLM API key:
+Edit `.env.local` with the credentials you just created:
 
 ```bash
-# Google OAuth (required for GSC)
-GOOGLE_CLIENT_ID=your-client-id
-GOOGLE_CLIENT_SECRET=your-client-secret
+# Google OAuth (from step 1)
+GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-your-secret
 GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
 
 # LLM API Keys (at least one required — OpenRouter recommended for best value)
@@ -144,6 +144,23 @@ OPENROUTER_API_KEY=sk-or-...
 ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 ```
+
+Then start the app:
+
+```bash
+npm run dev
+```
+
+### 3. Onboarding
+
+Open [http://localhost:3000](http://localhost:3000). The app walks you through:
+
+1. **Connect** — Click "Connect Google Search Console" to authorize via the OAuth credentials you set up above
+2. **Select Property** — Pick your site from the list of GSC properties on your Google account
+3. **Crawl & Sync** — Auto-crawl your site + pull 90 days of GSC data
+4. **Chat** — Start asking questions
+
+No database to set up. No Docker. No config files to wrestle with.
 
 ## How It Works
 
